@@ -2,5 +2,9 @@
   "name": "@yarn-workspaces-example/tsconfig",
   "peerDependencies": {
     "typescript": "^4"
+  },
+  "scripts": {
+    "pack-package": "yarn pack",
+    "publish-packed-package": "npm publish package.tgz --access public"
   }
 }

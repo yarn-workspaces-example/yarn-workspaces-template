@@ -1,0 +1,50 @@
+name: Pack Packages
+run-name: Pack Packages - ${{ inputs.version }}
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Sets the version of packages before packing. Example: `v1.0.0` or `1.2.3-pre1`.'
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Sets the version of packages before packing. Example: `v1.0.0` or `1.2.3-pre1`.'
+
+jobs:
+  pack:
+    name: Pack Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+      - name: Prepare packages version
+        id: prepare-version
+        run: |
+          version_string="${{ inputs.version }}"
+          version="${version_string/#v/}"
+          echo "Version: ${version}"
+          echo "version=${version}" >> $GITHUB_OUTPUT
+      - name: Set packages version
+        run: yarn set-version '${{ steps.prepare-version.outputs.version }}'
+      - name: Pack packages
+        run: |
+          yarn pack-packages
+      - name: Upload packed packages
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: packed-packages
+          path: |
+            **/package.json
+            **/*.tgz
+            **/README.md
+            .yarnrc.yml
+            yarn.lock
+            !**/node_modules

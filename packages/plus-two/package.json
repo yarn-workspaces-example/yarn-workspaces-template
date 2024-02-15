@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit --pretty",
     "test": "jest",
     "build": "tsc --project tsconfig.build.json --emitDeclarationOnly --outDir dist/types && tsc --project tsconfig.build.mjs.json && tsc --project tsconfig.build.cjs.json",
-    "publish": "yarn build && yarn npm publish --access public",
+    "pack-package": "yarn build && yarn pack",
+    "publish-packed-package": "npm publish package.tgz --access public",
     "clean": "rm -rf dist"
   },
   "dependencies": {
