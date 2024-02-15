@@ -1,0 +1,6 @@
+{
+  "name": "@yarn-workspaces-example/tsconfig",
+  "peerDependencies": {
+    "typescript": "^4"
+  }
+}

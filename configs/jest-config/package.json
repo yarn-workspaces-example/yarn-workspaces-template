@@ -1,0 +1,19 @@
+{
+  "name": "@yarn-workspaces-example/jest-config",
+  "main": "index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit --pretty"
+  },
+  "peerDependencies": {
+    "@types/jest": "^29",
+    "jest": "^29"
+  },
+  "dependencies": {
+    "@types/node": "*",
+    "json5": "*",
+    "ts-jest": "^29",
+    "ts-node": "*",
+    "typescript": "*"
+  }
+}

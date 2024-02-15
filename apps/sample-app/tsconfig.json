@@ -1,0 +1,20 @@
+{
+  "extends": "@yarn-workspaces-example/tsconfig",
+  "compilerOptions": {
+    "paths": {
+      // For the following workspace dependencies, use the uncompiled source code from to avoid the need to build them during development.
+      // To simulate using the compiled code as installing the packages from npm, comment out the following path mappings.
+      "@yarn-workspaces-example/plus-two": ["../../packages/plus-two/src"],
+      "@yarn-workspaces-example/sum": ["../../packages/sum/src"]
+    }
+  },
+  "ts-node": {
+    "require": [
+      // This is required for the path mappings in compilerOptions to work with ts-node.
+      "tsconfig-paths/register"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

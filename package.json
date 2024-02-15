@@ -1,0 +1,25 @@
+{
+  "name": "@yarn-workspaces-example/workspace-root",
+  "private": true,
+  "packageManager": "yarn@4.1.0",
+  "workspaces": [
+    "configs/*",
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "lint": "yarn workspaces foreach --all --exclude . run lint",
+    "typecheck": "FORCE_COLOR=true yarn workspaces foreach --all --topological --exclude . -vv run typecheck",
+    "test": "FORCE_COLOR=true yarn workspaces foreach --all --topological --exclude . run test",
+    "build": "FORCE_COLOR=true yarn workspaces foreach --all --topological --exclude . run build",
+    "clean": "FORCE_COLOR=true yarn workspaces foreach --all --exclude . run clean"
+  },
+  "dependencies": {
+    "@yarnpkg/types": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8",
+    "@yarn-workspaces-example/eslint-config": "workspace:^",
+    "eslint": "^8"
+  }
+}
