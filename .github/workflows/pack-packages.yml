@@ -1,6 +1,17 @@
 name: Pack Packages
-run-name: Pack Packages - ${{ inputs.version }}
+run-name: ${{ inputs.version && format('Pack Packages - {0}', inputs.version) || 'Pack Packages' }}
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
   workflow_call:
     inputs:
       version:
@@ -28,7 +39,7 @@ jobs:
       - name: Prepare packages version
         id: prepare-version
         run: |
-          version_string="${{ inputs.version }}"
+          version_string="${{ inputs.version || '0.0.0' }}"
           version="${version_string/#v/}"
           echo "Version: ${version}"
           echo "version=${version}" >> $GITHUB_OUTPUT
