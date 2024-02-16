@@ -1,7 +1,9 @@
 {
   "name": "@yarn-workspaces-example/eslint-config",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "pack-package": "yarn pack",
+    "publish-packed-package": "npm publish package.tgz --access public"
   },
   "peerDependencies": {
     "@types/eslint": "^8",

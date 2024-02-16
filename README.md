@@ -2,9 +2,8 @@
 
 This is a template for a monorepo using yarn workspaces, TypeScript, ESLint, and Jest.
 
-## Usage of this Template
-
-Before you start working, make sure to find and replace all occurrences of `@yarn-workspaces-example` with your project or NPM/GitHub organization name.
+> [!WARNING]
+> Before you start working, make sure to find and replace all occurrences of `@yarn-workspaces-example` with your project or NPM/GitHub organization name, and `rm yarn.lock` for a fresh start.
 
 ## Project Structure
 
@@ -28,4 +27,17 @@ As a workaround, we can leverage TypeScript's `paths` compiler option in the `ts
 
 See the `tsconfig.json` files of `packages/plus-two` and `apps/sample-app` for examples.
 
-Note that defining the `paths` compiler option will not change how import paths are emitted, while this is the desired behavior for building the package for distribution, but you will need to make sure you have also handled the mappings while using other tools such as Jest, `ts-node` or Babel. For Jest, it can be done automatically by using the `jestBaseConfig` function provided by `@yarn-workspaces-example/jest-config`. As for `ts-node`, it can be done by using the `tsconfig-paths` package, see the `tsconfig.json` file in `apps/sample-app` for an example.
+> [!NOTE]
+> Defining the `paths` compiler option will not change how import paths are emitted, while this is the desired behavior for building the package for distribution, but you will need to make sure you have also handled the mappings while using other tools such as Jest, `ts-node` or Babel.
+>
+> For Jest, it will be done automatically by using the `jestBaseConfig` function provided by `@yarn-workspaces-example/jest-config`.
+>
+> As for `ts-node`, it can be done by using the `tsconfig-paths` package, see the `tsconfig.json` file in `apps/sample-app` for an example.
+
+## Auto Publishing NPM Packages
+
+GitHub Actions can be used to automatically publish packages to NPM when a new release on GitHub is published.
+
+See [the "Auto Publishing NPM Packages" page on the Wiki](https://github.com/yarn-workspaces-example/yarn-workspaces-template/wiki/Auto-Publishing-NPM-Packages) for more information.
+
+If you do not want to use this, remove the `.github/workflows/pack-and-publish-packages.yml` file.

@@ -49,8 +49,59 @@ function enforceMatchedPeerDependenciesForConfigs({ Yarn }) {
   }
 }
 
+/**
+ * Enforce non-private packages ("private" not set to true in package.json) to have a "pack-package" script.
+ * The "pack-package" script is used by the CI to build the package.
+ *
+ * @param {import('@yarnpkg/types').Yarn.Constraints.Context} context
+ */
+function enforceNonPrivatePackagesHavePackPackageScript({ Yarn }) {
+  for (const workspace of Yarn.workspaces()) {
+    if (workspace.manifest.private) continue;
+
+    if (!workspace.manifest.scripts?.['pack-package']) {
+      workspace.set(
+        ['scripts', 'pack-package'],
+        `echo "TODO: add pack-package script for the ${workspace.ident} package" && exit 1`,
+      );
+    }
+
+    if (!workspace.manifest.scripts?.['publish-packed-package']) {
+      workspace.set(
+        ['scripts', 'publish-packed-package'],
+        `echo "TODO: add publish-packed-package script for the ${workspace.ident} package" && exit 1`,
+      );
+    }
+  }
+}
+
+/**
+ * Sets the version number for all workspaces.
+ * This will only make effect if the PACKAGES_VERSION environment variable is set.
+ *
+ * @param {import('@yarnpkg/types').Yarn.Constraints.Context} context
+ * @param {string} version
+ */
+function setVersions({ Yarn }, version) {
+  if (!version) return;
+
+  for (const workspace of Yarn.workspaces()) {
+    if (!workspace.manifest.private) {
+      workspace.set('version', version);
+    }
+  }
+}
+
 module.exports = defineConfig({
   async constraints(ctx) {
+    // Only check/set versions if the PACKAGES_VERSION environment variable is set.
+    if (process.env.PACKAGES_VERSION) {
+      setVersions(ctx, process.env.PACKAGES_VERSION);
+      return;
+    }
+
+    // Normal constraints.
     enforceMatchedPeerDependenciesForConfigs(ctx);
+    enforceNonPrivatePackagesHavePackPackageScript(ctx);
   },
 });

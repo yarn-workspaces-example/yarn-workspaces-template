@@ -1,0 +1,75 @@
+name: Pack and Publish Packages
+run-name: Pack and Publish ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version, e.g. `1.0.0` or `1.2.3-pre1`'
+        type: string
+        required: true
+
+permissions:
+  packages: write
+
+jobs:
+  test:
+    name: Run Basic Tests
+    uses: ./.github/workflows/basic-tests.yml
+
+  pack:
+    name: Pack Packages
+    uses: ./.github/workflows/pack-packages.yml
+    with:
+      version: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+
+  publish:
+    name: Publish Packages to ${{ matrix.environment }}
+    needs:
+      - test
+      - pack
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - NPM
+          - GitHub Packages
+    environment:
+      name: ${{ matrix.environment }}
+      url: ${{ vars.URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            .github
+      - name: Download built packages
+        uses: actions/download-artifact@v4.1.2
+        with:
+          name: packed-packages
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+      - name: Setup registry
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN || secrets.GITHUB_TOKEN }}
+          ENVIRONMENT: ${{ matrix.environment }}
+          NPM_REGISTRY_SERVER: ${{ vars.NPM_REGISTRY_SERVER }}
+        run: |
+          if [ -z "$NPM_REGISTRY_SERVER" ]; then
+            echo "[ERROR] The environment variable `NPM_REGISTRY_SERVER` is not set on environment \"$ENVIRONMENT\". Please check the settings on your GitHub repostory." >&2
+          fi
+          npm config set registry "$NPM_REGISTRY_SERVER"
+          echo "NPM Registry: $(npm config get registry)"
+
+          if [ -z "$NPM_AUTH_TOKEN" ] && [[ "$NPM_REGISTRY_SERVER" != *pkg.github.com* ]]; then
+            echo "[ERROR] The environment variable \`NPM_AUTH_TOKEN\` is not set on environment \"$ENVIRONMENT\". Please check the settings on your GitHub repository." >&2
+          fi
+          echo "${NPM_REGISTRY_SERVER}" | sed -e 's#http[s]*://##' -e 's#/$##' -e 's#^#//#' -e 's#$#/:_authToken=\${NPM_AUTH_TOKEN}#' > .npmrc
+      - name: Publish packages
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          yarn publish-packed-packages --tag ${{ contains(steps.get-release-version.outputs.version, '-') && 'next' || 'latest' }}
