@@ -5,6 +5,7 @@
   },
   "scripts": {
     "pack-package": "yarn pack",
-    "publish-packed-package": "npm publish package.tgz --access public"
+    "publish-packed-package": "npm publish package.tgz --access public",
+    "clean": "rm -rf package.tgz"
   }
 }

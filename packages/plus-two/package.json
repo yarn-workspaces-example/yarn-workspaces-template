@@ -14,7 +14,7 @@
     "build": "tsc --project tsconfig.build.json --emitDeclarationOnly --outDir dist/types && tsc --project tsconfig.build.mjs.json && tsc --project tsconfig.build.cjs.json",
     "pack-package": "yarn build && yarn pack",
     "publish-packed-package": "npm publish package.tgz --access public",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && rm -rf package.tgz"
   },
   "dependencies": {
     "@yarn-workspaces-example/sum": "workspace:^"

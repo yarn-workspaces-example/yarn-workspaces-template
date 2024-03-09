@@ -3,7 +3,8 @@
   "scripts": {
     "lint": "eslint .",
     "pack-package": "yarn pack",
-    "publish-packed-package": "npm publish package.tgz --access public"
+    "publish-packed-package": "npm publish package.tgz --access public",
+    "clean": "rm -rf package.tgz"
   },
   "peerDependencies": {
     "@types/eslint": "^8",
