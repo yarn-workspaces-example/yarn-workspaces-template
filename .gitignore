@@ -4,5 +4,6 @@
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+!.yarn/constraints
 
 node_modules
