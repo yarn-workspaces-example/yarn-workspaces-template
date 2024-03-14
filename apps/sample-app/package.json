@@ -7,8 +7,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@types/node": "*",
     "@yarn-workspaces-example/plus-two": "workspace:^",
-    "ts-node": "^10"
+    "ts-node": "^10",
+    "typescript": ">=2.7"
   },
   "devDependencies": {
     "@types/eslint": "^8",

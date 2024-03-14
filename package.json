@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/eslint": "^8",
     "@yarn-workspaces-example/eslint-config": "workspace:^",
-    "eslint": "^8"
+    "eslint": "^8",
+    "semver": ">=7"
   }
 }

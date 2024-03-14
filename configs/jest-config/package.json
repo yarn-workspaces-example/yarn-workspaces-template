@@ -17,6 +17,13 @@
     "json5": "*",
     "ts-jest": "^29",
     "ts-node": "*",
-    "typescript": "*"
+    "typescript": ">=4.3 <6"
+  },
+  "optionalPeerDependencies": {
+    "@babel/core": ">=7.0.0-beta.0 <8",
+    "@jest/types": "^29.0.0",
+    "babel-jest": "^29.0.0",
+    "@swc/core": ">=1.2.50",
+    "@swc/wasm": ">=1.2.50"
   }
 }
