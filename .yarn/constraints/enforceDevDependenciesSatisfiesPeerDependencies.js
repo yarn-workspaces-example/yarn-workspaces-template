@@ -14,6 +14,7 @@ function enforceDevDependenciesSatisfiesPeerDependencies({ Yarn }) {
 
       if (
         devDependencyVersion &&
+        !devDependencyVersion.startsWith('patch:') &&
         !semver.subset(devDependencyVersion, version)
       ) {
         workspace.set(['devDependencies', name], version);

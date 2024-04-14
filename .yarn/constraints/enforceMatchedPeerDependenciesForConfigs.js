@@ -1,3 +1,5 @@
+const semver = require('semver');
+
 /**
  * Enforce workspaces that depend on configuration workspaces have the same version of the "peerDependencies" of every configuration workspaces it depends on.
  *
@@ -31,11 +33,22 @@ function enforceMatchedPeerDependenciesForConfigs({ Yarn }) {
         /** All the "peerDependencies" of the configuration workspace. */
         const configurationWorkspacePeerDependencies =
           configurationWorkspace.pkg.peerDependencies;
-        // For each "peerDependencies" of the configuration workspace, enforce that the current workspace depends on the same version.
+        // For each "peerDependencies" of the configuration workspace, enforce that the current workspace depends on a satisfying version.
         for (const [
           peerDependencyIdent,
           peerDependencyVersion,
         ] of configurationWorkspacePeerDependencies) {
+          const listedVersion =
+            workspace.manifest.dependencies?.[peerDependencyIdent] ||
+            workspace.manifest[dependenciesKey]?.[peerDependencyIdent];
+
+          if (
+            listedVersion.startsWith('patch:') ||
+            semver.subset(listedVersion, peerDependencyVersion)
+          ) {
+            continue;
+          }
+
           workspace.set(
             [dependenciesKey, peerDependencyIdent],
             peerDependencyVersion,
